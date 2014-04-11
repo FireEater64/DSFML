@@ -49,7 +49,7 @@ class SoundBufferRecorder:SoundRecorder
 	~this()
 	{
 		debug import dsfml.system.config;
-		mixin(destructorOutput);
+		debug mixin(destructorOutput);
 	}
 
 	SoundBuffer getBuffer()

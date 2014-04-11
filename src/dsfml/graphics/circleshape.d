@@ -57,7 +57,7 @@ class CircleShape:Shape
 	~this()
 	{
 		debug import dsfml.system.config;
-		mixin(destructorOutput);
+		debug mixin(destructorOutput);
 	}
 
 
