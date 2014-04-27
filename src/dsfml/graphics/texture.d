@@ -159,6 +159,7 @@ class Texture
 		return new Image(sfTexture_copyToImage(sfPtr));
 	}
 
+	@property
 	Texture dup() const
 	{
 		return new Texture(sfTexture_copy(sfPtr));
@@ -193,6 +194,24 @@ class Texture
 	void updateFromWindow(RenderWindow window, uint x, uint y)
 	{
 		sfTexture_updateFromRenderWindow(sfPtr, window.sfPtr, x, y);
+	}
+}
+
+unittest
+{
+	version(DSFML_Unittest_Graphics)
+	{
+		import std.stdio;
+		
+		writeln("Unit test for Texture");
+
+		auto texture = new Texture();
+
+		assert(texture.loadFromFile("res/star.png"));
+
+		//do things with the texture
+
+		writeln();
 	}
 }
 

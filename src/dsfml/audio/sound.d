@@ -35,11 +35,22 @@ import dsfml.audio.soundsource;
 
 import dsfml.system.time;
 
-
-
-
-
-
+/++
+ + Regular sound that can be played in the audio environment.
+ + Sound is the class used to play sounds.
+ + 
+ + It provides:
+ + 		- Control (play, pause, stop)
+ + 		- Ability to modify output parameters in real-time (pitch, volume, ...)
+ + 		- 3D spatial features (position, attenuation, ...).
+ + 
+ + Sound is perfect for playing short sounds that can fit in memory and require no latency, like foot steps or gun shots. For longer sounds, like background musics or long speeches, rather see Music (which is based on streaming).
+ + 
+ + In order to work, a sound must be given a buffer of audio data to play. Audio data (samples) is stored in SoundBuffer, and attached to a sound with the setBuffer() function. The buffer object attached to a sound must remain alive as long as the sound uses it. Note that multiple sounds can use the same sound buffer at the same time.
+ + 
+ + See_Also: http://www.sfml-dev.org/documentation/2.0/classsf_1_1Sound.php#details
+ + Authors: Laurent Gomila, Jeremy DeHaan
+ +/
 class Sound : SoundSource
 {
 	import std.typecons:Rebindable;
@@ -68,34 +79,50 @@ class Sound : SoundSource
 		//detach the buffer
 		if(m_buffer !is null)
 		{
-			m_buffer.detachSound(this);
+			//m_buffer.detachSound(this);
 		}
 	}
 
+	/** 
+	 * Whether or not the sound should loop after reaching the end.
+	 * 
+	 * If set, the sound will restart from beginning after reaching the end and so on, until it is stopped or setLoop(false) is called.
+	 * 
+	 * The default looping state for sound is false.
+	 */
 	@property
 	{
 		void isLooping(bool loop)
 		{
 			sfSound_setLoop(m_source, loop);
 		}
+
 		bool isLooping()
 		{
 			return sfSound_getLoop(m_source);
 		}
 	}
 	
+	/**
+	 * Change the current playing position (from the beginning) of the sound.
+	 * 
+	 * The playing position can be changed when the sound is either paused or playing.
+	 */
 	@property
 	{
 		void playingOffset(Time offset)
 		{
 			sfSound_setPlayingOffset(m_source, offset.asSeconds());
 		}
+
 		Time playingOffset()
 		{
 			return seconds(sfSound_getPlayingOffset(m_source));
 		}
 	}
 
+	/// Get the current status of the sound (stopped, paused, playing).
+	/// Returns: Current status of the sound
 	@property
 	{
 		Status status()
@@ -104,7 +131,15 @@ class Sound : SoundSource
 		}
 	}
 
-	//Property?
+	// Property? 
+	// (note: if this is changed to a property, change the 
+	// documentation at the top of the file accordingly)
+	/*
+	 * Set the source buffer containing the audio data to play. It is important to note that the sound buffer is not copied, thus the SoundBuffer instance must remain alive as long as it is attached to the sound.
+	 * 
+	 * Params:
+	 * 		buffer =	Sound buffer to attach to the sound
+	 */
 	void setBuffer(const(SoundBuffer) buffer)
 	{
 		//First detach from the previous buffer
@@ -123,16 +158,29 @@ class Sound : SoundSource
 		
 	}
 
+	/// Pause the sound.
+	/// 
+	/// This function pauses the sound if it was playing, otherwise (sound already paused or stopped) it has no effect.
 	void pause()
 	{
 		sfSoundStream_alSourcePause(m_source);
 	}
 
+	/**
+	 * Start or resume playing the sound.
+	 * 
+	 * This function starts the stream if it was stopped, resumes it if it was paused, and restarts it from beginning if it was it already playing.
+	 * 
+	 * This function uses its own thread so that it doesn't block the rest of the program while the sound is played.
+	 */
 	void play()
 	{
 		sfSoundStream_alSourcePlay(m_source);
 	}
 
+	/// Reset the internal buffer of the sound.
+	/// 
+	/// This function is for internal use only, you don't have to use it. It is called by the SoundBuffer that this sound uses, when it is destroyed in order to prevent the sound from using a dead buffer.
 	void resetBuffer()
 	{
 		//stop the current sound;
@@ -143,6 +191,9 @@ class Sound : SoundSource
 		m_buffer = null;
 	}
 
+	/// Stop playing the sound.
+	/// 
+	/// This function stops the sound if it was playing or paused, and does nothing if it was already stopped. It also resets the playing position (unlike pause()).
 	void stop()
 	{
 		sfSoundStream_alSourceStop(m_source);
@@ -152,27 +203,43 @@ class Sound : SoundSource
 
 unittest
 {
-	import std.stdio;
-
-	writeln("Unit test for Sound class");
-
-	//first, get a sound buffer
-
-	auto soundbuffer = new SoundBuffer();
-	
-	if(!soundbuffer.loadFromFile("cave1.ogg"))
+	version(DSFML_Unittest_Audio)
 	{
-		//error
-		return;
+		import std.stdio;
+		import dsfml.system.clock;
+		import dsfml.system.time;
+
+
+		writeln("Unit test for Sound class");
+
+		//first, get a sound buffer
+
+		auto soundbuffer = new SoundBuffer();
+	
+		if(!soundbuffer.loadFromFile("res/cave1.ogg"))
+		{
+			//error
+			return;
+		}
+
+		float duration = soundbuffer.getDuration().asSeconds();
+
+		auto sound = new Sound(soundbuffer);
+
+
+		auto clock = new Clock();
+		//play the sound!
+		sound.play();
+
+
+		while(clock.getElapsedTime().asSeconds()< duration)
+		{
+			//wait for sound to finish
+		}
+
+
+		writeln();
 	}
-
-	auto sound = new Sound(soundbuffer);
-
-	//play the sound!
-	sound.play();
-
-
-	writeln();
 }
 
 private extern(C):

@@ -22,6 +22,5 @@ enum destructorOutput =`
 	{
 		import dsfml.system.err;
 		err.writeln("Destroying ", typeof(this).stringof);
-	}
-`;
+	}`;
 

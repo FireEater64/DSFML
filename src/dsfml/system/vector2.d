@@ -147,6 +147,7 @@ return Vector2!(T)(0,0);
 	
 	//Compare operator
 	bool opEquals(E)(const Vector2!(E) otherVector) const
+	if(isNumeric!(E))
 	{
 		return ((x == otherVector.x) && (y == otherVector.y));
 	}
@@ -164,40 +165,42 @@ alias Vector2!(uint) Vector2u;
 
 unittest
 {
-	import std.stdio;
+	version(DSFML_Unittest_System)
+	{
+		import std.stdio;
 
-	writeln("Unit test for Vector2");
+		writeln("Unit test for Vector2");
 
-	auto floatVector2 = Vector2f(100,100);
+		auto floatVector2 = Vector2f(100,100);
 
-	assert((floatVector2/2) == Vector2f(50,50));
+		assert((floatVector2/2) == Vector2f(50,50));
 
-	assert((floatVector2*2) == Vector2f(200,200));
+		assert((floatVector2*2) == Vector2f(200,200));
 
-	assert((floatVector2 + Vector2f(50, 0)) == Vector2f(150, 100));
+		assert((floatVector2 + Vector2f(50, 0)) == Vector2f(150, 100));
 
-	assert((floatVector2 - Vector2f(50,0)) == Vector2f(50,100));
+		assert((floatVector2 - Vector2f(50,0)) == Vector2f(50,100));
 
-	floatVector2/=2;
+		floatVector2/=2;
 
-	assert(floatVector2 == Vector2f(50,50));
+		assert(floatVector2 == Vector2f(50,50));
 
-	floatVector2*=2;
+		floatVector2*=2;
 
-	assert(floatVector2 == Vector2f(100,100));
+		assert(floatVector2 == Vector2f(100,100));
 
-	floatVector2+= Vector2f(50,0);
+		floatVector2+= Vector2f(50,0);
 
-	assert(floatVector2 == Vector2f(150,100));
+		assert(floatVector2 == Vector2f(150,100));
 
-	floatVector2-=Vector2f(50,100);
+		floatVector2-=Vector2f(50,100);
 
-	assert(floatVector2 == Vector2f(100,0));
+		assert(floatVector2 == Vector2f(100,0));
 
+	
+		writeln("Vector2 tests passed");
+		writeln();
 
-	writeln("Vector2 tests passed");
-	writeln();
-
-
+	}
 }
 

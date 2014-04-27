@@ -114,9 +114,10 @@ class Sprite:Drawable,Transformable
 		
 	}
 
-	const(Texture) getTexture()
+
+	FloatRect getGlobalBounds()
 	{
-		return m_texture;
+		return getTransform().transformRect(getLocalBounds());
 	}
 
 	FloatRect getLocalBounds()
@@ -125,10 +126,10 @@ class Sprite:Drawable,Transformable
 		float height = (abs(m_textureRect.height));
 		return FloatRect(0f, 0f, width, height);
 	}
-	
-	FloatRect getGlobalBounds()
+
+	const(Texture) getTexture()
 	{
-		return getTransform().transformRect(getLocalBounds());
+		return m_texture;
 	}
 	
 	void setTexture(const(Texture) texture, bool rectReset = false)
@@ -151,10 +152,20 @@ class Sprite:Drawable,Transformable
 		}
 	}
 
-	//TODO: Fix this. Whoops.
+	@property
 	Sprite dup() const
 	{
-		return new Sprite();
+		Sprite temp = new Sprite();
+		// properties from Transformable
+		temp.origin = origin;
+		temp.position = position;
+		temp.rotation = rotation;
+		temp.scale = scale;
+		// properties from Sprite:
+		temp.setTexture(m_texture);
+		temp.color = m_vertices[0].color;
+		temp.textureRect = m_textureRect;
+		return temp;
 	}
 	
 	void updatePositions()
@@ -180,4 +191,35 @@ class Sprite:Drawable,Transformable
 		m_vertices[3].texCoords = Vector2f(right, top);
 	}
 
+}
+
+unittest
+{
+	version(DSFML_Unittest_Graphics)
+	{
+		import std.stdio;
+
+		import dsfml.graphics.rendertexture;
+
+		writeln("Unit test for Sprite");
+
+		auto texture = new Texture();
+
+		assert(texture.loadFromFile("res/star.png"));
+
+		auto sprite = new Sprite(texture);
+
+
+		auto renderTexture = new RenderTexture();
+
+		assert(renderTexture.create(100,100));
+
+		renderTexture.clear();
+
+		renderTexture.draw(sprite);
+
+		renderTexture.display();
+
+		writeln();
+	}
 }

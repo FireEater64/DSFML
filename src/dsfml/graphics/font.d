@@ -146,13 +146,14 @@ class Font
 	const(Texture) getTexture (uint characterSize) const
 	{
 		//ToDo: cache texture somehow?
-		//Possible: cache last size used using sound method(mutable instance storage
+		//Possible: cache last size used using sound method(mutable instance storage)
 
 		sfFont_updateTexture(sfPtr, characterSize);
 
 		return fontTexture;
 	}
 
+	@property
 	Font dup() const
 	{
 		return new Font(sfFont_copy(sfPtr));
@@ -160,8 +161,31 @@ class Font
 
 }
 
-private:
+unittest
+{
+	version(DSFML_Unittest_Graphics)
+	{
+		import std.stdio;
 
+		import dsfml.graphics.text;
+
+		writeln("Unitest for Font");
+
+		auto font = new Font();
+		assert(font.loadFromFile("res/unifont_upper.ttf"));
+
+		Text text;
+		text = new Text("Sample String", font);
+
+
+		//draw text or something
+
+		writeln();
+	}
+}
+
+
+private:
 private extern(C++) interface sfmlInputStream
 {
 	long read(void* data, long size);

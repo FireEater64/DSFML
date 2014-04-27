@@ -34,9 +34,6 @@ import dsfml.graphics.shape;
 import dsfml.system.vector2;
 
 
-
-
-
 class CircleShape:Shape
 {
 	private
@@ -104,7 +101,7 @@ class CircleShape:Shape
 		return Vector2f(m_radius + x, m_radius + y);
 	}
 	
-
+	@property
 	CircleShape dup() const
 	{
 		CircleShape temp = new CircleShape(m_radius, m_pointCount);
@@ -117,4 +114,47 @@ class CircleShape:Shape
 		return temp;
 	}
 	
+}
+
+unittest
+{
+	version(DSFML_Unittest_Graphics)
+	{
+		import std.stdio;
+		import dsfml.graphics;
+
+		writeln("Unit test for CircleShape");
+		auto window = new RenderWindow(VideoMode(800,600), "CircleShape unittest");
+
+		auto circleShape = new CircleShape(20);
+
+		circleShape.fillColor = Color.Blue;
+
+		circleShape.outlineColor = Color.Green;
+	
+		auto clock = new Clock();
+
+
+		while(window.isOpen())
+		{
+			Event event;
+
+			while(window.pollEvent(event))
+			{
+				//no events gonna do stuffs!
+			}
+
+			//draws the shape for a while before closing the window
+			if(clock.getElapsedTime().asSeconds() >1)
+			{
+				window.close();
+			}
+
+			window.clear();
+			window.draw(circleShape);
+			window.display();
+		}
+
+		writeln();
+	}
 }
