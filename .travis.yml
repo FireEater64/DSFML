@@ -23,6 +23,6 @@ before_install:
   - dmd build.d
  
 install:
-script: ./build
+script: dmd build.d -unittest && ./build
 
 
