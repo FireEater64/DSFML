@@ -1,5 +1,6 @@
 DSFML
 =====
+[![Build Status](https://api.travis-ci.org/FireEater64/DSFML.png?branch=master)](https://travis-ci.org/FireEater64/DSFML)
 DSFML is a static binding of SFML, which let's you use SFML in your D programs. DSFML attempts to be as compatible with SFML as possible, but does so in a way that makes sense for the D language.
 
 
