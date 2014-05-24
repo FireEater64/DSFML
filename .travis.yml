@@ -20,7 +20,6 @@ before_install:
   - make
   - sudo make install
   - cd $TRAVIS_BUILD_DIR
-  - dmd build.d
  
 install:
 script: dmd build.d -unittest && ./build
