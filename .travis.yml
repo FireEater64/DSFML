@@ -17,7 +17,7 @@ before_install:
   - cd DSFML-C
   - cmake .
   - make
-  - make install
+  - sudo make install
  
 install:
 script: echo "To be implemented"
