@@ -7,7 +7,7 @@ before_install:
   - sudo apt-get update -qq && sudo apt-get -y --allow-unauthenticated install --reinstall d-apt-keyring && sudo apt-get update -qq
   - sudo apt-get install -y libpthread-stubs0-dev libgl1-mesa-dev libx11-dev libxrandr-dev libfreetype6-dev libglew1.5-dev libjpeg8-dev libsndfile1-dev libopenal-dev dmd-bin
   - wget http://www.sfml-dev.org/download/sfml/2.0/SFML-2.0-sources.zip
-  - unzip SFML-2.0-sources.zip
+  - unzip -qq SFML-2.0-sources.zip
   - cd SFML-2.0
   - cmake -fPIC .
   - make
@@ -19,9 +19,7 @@ before_install:
   - cmake .
   - make
   - sudo make install
-  - cd $HOME
-  - git clone https://github.com/FireEater64/DSFML.git
-  - cd DSFML
+  - cd $HOME/DSFML
   - dmd build.d
  
 install:
