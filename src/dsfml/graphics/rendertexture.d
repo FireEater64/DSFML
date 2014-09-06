@@ -96,7 +96,7 @@ class RenderTexture : RenderTarget
 	 */
 	bool create(uint width, uint height, bool depthBuffer = false)
 	{
-		import std.conv;
+		import dsfml.system.string;
 
 		//if the RenderTexture already exists, destroy it first
 		if(sfPtr != null)
@@ -105,7 +105,7 @@ class RenderTexture : RenderTarget
 		}
 
 		sfPtr = sfRenderTexture_create(width, height, depthBuffer);
-		err.write(text(sfErrGraphics_getOutput()));
+		err.write(toString(sfErr_getOutput()));
 
 		if(sfPtr != null)
 		{
@@ -399,9 +399,9 @@ class RenderTexture : RenderTarget
 	 */
 	void pushGLStates()
 	{
-		import std.conv;
+		import dsfml.system.string;
 		sfRenderTexture_pushGLStates(sfPtr);
-		err.write(text(sfErrGraphics_getOutput()));
+		err.write(toString(sfErr_getOutput()));
 	}
 
 	/**
@@ -509,4 +509,4 @@ void sfRenderTexture_setSmooth(sfRenderTexture* renderTexture, bool smooth);
 bool sfRenderTexture_isSmooth(const sfRenderTexture* renderTexture);
 
 
-const(char)* sfErrGraphics_getOutput();
+const(char)* sfErr_getOutput();

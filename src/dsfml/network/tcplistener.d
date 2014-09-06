@@ -65,17 +65,19 @@ class TcpListener:Socket
 
 	Status accept(TcpSocket socket)
 	{
-		import std.conv;
+		import dsfml.system.string;
+
 		Status toReturn = sfTcpListener_accept(sfPtr, &socket.sfPtr); 
-		err.write(text(sfErrNetwork_getOutput()));
+		err.write(toString(sfErr_getOutput()));
 		return toReturn; 
 	}
 
 	Status listen(ushort port)
 	{
-		import std.conv;
+		import dsfml.system.string;
+
 		Status toReturn = sfTcpListener_listen(sfPtr, port);
-		err.write(text(sfErrNetwork_getOutput()));
+		err.write(toString(sfErr_getOutput()));
 		return toReturn;
 	}
 
@@ -118,7 +120,7 @@ unittest
 	}
 }
 
-private extern(C):
+package extern(C):
 
 struct sfTcpListener;
 
@@ -148,4 +150,4 @@ Socket.Status sfTcpListener_listen(sfTcpListener* listener, ushort port);
 //Accept a new connection
 Socket.Status sfTcpListener_accept(sfTcpListener* listener, sfTcpSocket** connected);
 
-const(char)* sfErrNetwork_getOutput();
+const(char)* sfErr_getOutput();

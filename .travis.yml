@@ -3,16 +3,12 @@ compiler:
   - gcc
 
 before_install:
+  #set up d-apt  repository
   - sudo wget http://netcologne.dl.sourceforge.net/project/d-apt/files/d-apt.list -O /etc/apt/sources.list.d/d-apt.list
   - sudo apt-get update -qq && sudo apt-get -y --allow-unauthenticated install --reinstall d-apt-keyring && sudo apt-get update -qq
+  #Install everything we need to build
   - sudo apt-get install -y libpthread-stubs0-dev libgl1-mesa-dev libx11-dev libxrandr-dev libfreetype6-dev libglew1.5-dev libjpeg8-dev libsndfile1-dev libopenal-dev dmd-bin
-  - wget http://www.sfml-dev.org/download/sfml/2.0/SFML-2.0-sources.zip
-  - unzip -qq SFML-2.0-sources.zip
-  - cd SFML-2.0
-  - cmake -fPIC .
-  - make
-  - sudo make install
-  - sudo cp cmake/Modules/FindSFML.cmake /usr/share/cmake-2.8/Modules/
+  #Build and install DSFML-C
   - cd $HOME
   - git clone https://github.com/Jebbs/DSFML-C.git
   - cd DSFML-C
@@ -22,6 +18,6 @@ before_install:
   - cd $TRAVIS_BUILD_DIR
  
 install:
-script: dmd build.d -unittest && ./build
+script: rdmd build.d -unittest
 
 

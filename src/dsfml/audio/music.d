@@ -35,7 +35,7 @@ import dsfml.system.time;
 import dsfml.system.inputstream;
 
 import dsfml.audio.soundstream;
-import dsfml.audio.soundfile;
+
 
 /++
  + Streamed music played from an audio file.
@@ -53,6 +53,8 @@ import dsfml.audio.soundfile;
  +/
 class Music : SoundStream
 {
+	import dsfml.audio.soundfile;
+
 	private
 	{
 		SoundFile m_file;
@@ -171,21 +173,20 @@ class Music : SoundStream
 		 * This function fills the chunk from the next samples to read from the audio file.
 		 * 
 		 * Params:
-		 * 		data =	Chunk of data to fill
+		 * 		samples =	Array of samples to fill
 		 * 
 		 * Returns: True to continue playback, false to stop.
 		 */
-		override bool onGetData(ref Chunk data)
+		override bool onGetData(ref const(short)[] samples)
 		{
 			import dsfml.system.lock;
 
 			Lock lock = Lock(m_mutex);
 
-			data.sampleCount = cast(size_t)m_file.read(m_samples);
-			data.samples = m_samples.ptr;
+			auto length = cast(size_t)m_file.read(m_samples);
+			samples = m_samples[0..length];
 
-
-			return data.sampleCount == m_samples.length;
+			return (samples.length == m_samples.length);
 		}
 		/**
 		 * Change the current playing position in the stream source.

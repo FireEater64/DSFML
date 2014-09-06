@@ -30,7 +30,6 @@ All Libraries used by SFML - For a full list see http://www.sfml-dev.org/license
 
 module dsfml.system.vector3;
 
-import std.conv;
 import std.traits;
 
 struct Vector3(T)
@@ -47,6 +46,13 @@ struct Vector3(T)
 		y = Y;	
 		z = Z;
 		
+	}
+
+	this(E)(Vector3!(E) otherVector)
+	{
+		x = cast(T)(otherVector.x);
+		y = cast(T)(otherVector.y);
+		z = cast(T)(otherVector.z);
 	}
 
 	
@@ -128,7 +134,15 @@ struct Vector3(T)
 			return this;
 		}
 	}
-	
+
+	//assign operator
+	ref Vector3!(T) opAssign(E)(Vector3!(E) otherVector)
+	{
+		x = cast(T)(otherVector.x);
+		y = cast(T)(otherVector.y);
+		z = cast(T)(otherVector.z);
+		return this;
+	}
 	
 	/* Omitted for the same reason as Vector3's normalize.
 * I very much would like to include it though!
@@ -149,7 +163,8 @@ return Vector3!(T)(0,0,0);
 */
 	string toString() const
 	{
-		return "X: " ~ text(x) ~ " Y: " ~ text(y) ~ text(" Z: ") ~ text(z);
+		import std.conv;
+		return "X: " ~ text(x) ~ " Y: " ~ text(y) ~ " Z: " ~ text(z);
 	}
 }
 

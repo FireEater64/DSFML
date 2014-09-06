@@ -79,25 +79,24 @@ class RenderWindow : Window, RenderTarget
 
 	this(VideoMode mode, string title, Style style = Style.DefaultStyle, ref const(ContextSettings) settings = ContextSettings.Default)
 	{
-		import std.string;
-		import std.conv;
+		import dsfml.system.string;
 		sfPtr = sfRenderWindow_create(mode.width, mode.height, mode.bitsPerPixel, toStringz(title), style, settings.depthBits, settings.stencilBits, settings.antialiasingLevel, settings.majorVersion, settings.minorVersion);
-		err.write(text(sfErrGraphics_getOutput()));
+		err.write(toString(sfErr_getOutput()));
 	}
 
 	//in order to envoke this constructor when using string literals, be sure to use the d suffix, i.e. "素晴らしい ！"d
 	this(VideoMode mode, dstring title, Style style = Style.DefaultStyle, ref const(ContextSettings) settings = ContextSettings.Default)
 	{
-		import std.conv;
-		sfPtr = sfRenderWindow_createUnicode(mode.width, mode.height, mode.bitsPerPixel, toUTF32z(title), style, settings.depthBits, settings.stencilBits, settings.antialiasingLevel, settings.majorVersion, settings.minorVersion);
-		err.write(text(sfErrGraphics_getOutput()));
+		import dsfml.system.string;
+		sfPtr = sfRenderWindow_createUnicode(mode.width, mode.height, mode.bitsPerPixel, toStringz(title), style, settings.depthBits, settings.stencilBits, settings.antialiasingLevel, settings.majorVersion, settings.minorVersion);
+		err.write(toString(sfErr_getOutput()));
 	}
 
 	this(WindowHandle handle, ref const(ContextSettings) settings = ContextSettings.Default)
 	{
-		import std.conv;
+		import dsfml.system.string;
 		sfPtr = sfRenderWindow_createFromHandle(handle, settings.depthBits,settings.stencilBits, settings.antialiasingLevel, settings.majorVersion, settings.minorVersion);
-		err.write(text(sfErrGraphics_getOutput()));
+		err.write(toString(sfErr_getOutput()));
 	}
 
 	~this()
@@ -250,9 +249,9 @@ class RenderWindow : Window, RenderTarget
 	 */
 	override bool setActive(bool active)
 	{
-		import std.conv;
+		import dsfml.system.string;
 		bool toReturn = sfRenderWindow_setActive(sfPtr, active);
-		err.write(text(sfErrGraphics_getOutput()));
+		err.write(toString(sfErr_getOutput()));
 		return toReturn;
 	}
 
@@ -351,7 +350,8 @@ class RenderWindow : Window, RenderTarget
 	 */
 	override void setTitle(dstring newTitle)
 	{
-		sfRenderWindow_setUnicodeTitle(sfPtr, toUTF32z(newTitle));
+		import dsfml.system.string;
+		sfRenderWindow_setUnicodeTitle(sfPtr, toStringz(newTitle));
 	}
 
 	/**
@@ -584,9 +584,9 @@ class RenderWindow : Window, RenderTarget
 	 */
 	void pushGLStates()
 	{
-		import std.conv;
+		import dsfml.system.string;
 		sfRenderWindow_pushGLStates(sfPtr);
-		err.write(text(sfErrGraphics_getOutput()));
+		err.write(toString(sfErr_getOutput()));
 	}
 
 	/**
@@ -749,10 +749,13 @@ unittest
 	}
 }
 
-alias toUTF32z = std.utf.toUTFz!(const(dchar)*);
 package extern(C):
 
 struct sfRenderWindow;
+
+private extern(C):
+
+
 
 sfRenderWindow* sfRenderWindow_create(uint width, uint height, uint bitsPerPixel, const char* title, int style, uint depthBits, uint stencilBits, uint antialiasingLevel, uint majorVersion, uint minorVersion);
 
@@ -874,4 +877,4 @@ void sfMouse_getPositionRenderWindow(const sfRenderWindow* relativeTo, int* x, i
 //Set the current position of the mouse relatively to a render-window
 void sfMouse_setPositionRenderWindow(int x, int y, const sfRenderWindow* relativeTo);
 
-const(char)* sfErrGraphics_getOutput();
+const(char)* sfErr_getOutput();

@@ -94,10 +94,10 @@ class TcpSocket:Socket
 
 	Status send(const(void)[] data)
 	{
-		import std.conv;
+		import dsfml.system.string;
 
 		Status toReturn = sfTcpSocket_send(sfPtr, data.ptr, data.length);
-		err.write(text(sfErrNetwork_getOutput()));
+		err.write(toString(sfErr_getOutput()));
 		return toReturn;
 	}
 
@@ -209,10 +209,9 @@ unittest
 	}
 }
 
-private extern(C):
+package extern(C):
 
 struct sfTcpSocket;
-
 
 //Create a new TCP socket
 sfTcpSocket* sfTcpSocket_create();
@@ -265,5 +264,5 @@ Socket.Status sfTcpSocket_sendPacket(sfTcpSocket* socket, sfPacket* packet);
 //Receive a formatted packet of data from the remote peer
 Socket.Status sfTcpSocket_receivePacket(sfTcpSocket* socket, sfPacket* packet);
 
-const(char)* sfErrNetwork_getOutput();
+const(char)* sfErr_getOutput();
 

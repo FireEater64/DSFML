@@ -27,35 +27,60 @@ Copyright (C) 2007-2013 Laurent Gomila (laurent.gom@gmail.com)
 
 All Libraries used by SFML - For a full list see http://www.sfml-dev.org/license.php
 */
-module dsfml.graphics;
 
-public
+///This module contains functions for interacting with strings going to and from 
+///a C/C++ library. This module has no dependencies.
+module dsfml.system.string;
+
+//Returns a string copy of a zero terminated C style string
+immutable(T)[] toString(T)(in const(T)* str) pure
+	if (is(T == dchar)||is(T == wchar)||is(T == char))
 {
-	import dsfml.window;
+	return str[0..strlen(str)].idup;
+}
 
-	import dsfml.graphics.blendmode;
-	import dsfml.graphics.circleshape;
-	import dsfml.graphics.color;
-	import dsfml.graphics.convexshape;
-	import dsfml.graphics.drawable;
-	import dsfml.graphics.font;
-	import dsfml.graphics.glyph;
-	import dsfml.graphics.image;
-	import dsfml.graphics.primitivetype;
-	import dsfml.graphics.rect;
-	import dsfml.graphics.rectangleshape;
-	import dsfml.graphics.renderstates;
-	import dsfml.graphics.rendertarget;
-	import dsfml.graphics.rendertexture;
-	import dsfml.graphics.renderwindow;
-	import dsfml.graphics.shader;
-	import dsfml.graphics.shape;
-	import dsfml.graphics.sprite;
-	import dsfml.graphics.text;
-	import dsfml.graphics.texture;
-	import dsfml.graphics.transform;
-	import dsfml.graphics.transformable;
-	import dsfml.graphics.vertex;
-	import dsfml.graphics.vertexarray;
-	import dsfml.graphics.view;
+//returns a C style string from a D string type
+const(T)* toStringz(T)(in immutable(T)[] str) nothrow 
+	if (is(T == dchar)||is(T == wchar)||is(T == char))
+{
+	//TODO: get rid of GC usage
+	static T[] copy;//a means to store the copy after returning the address
+
+	//Already zero terminated
+	if(str[$-1] == 0)
+	{
+		return str.ptr;
+	}
+	//not zero terminated
+	else
+	{
+		copy = new T[str.length+1];
+		copy[0..str.length] = str[];
+		copy[$-1] = 0;
+
+		return copy.ptr;
+
+	}
+}
+
+//get's the length of a C style string
+size_t strlen(T)(in const(T)* str) pure nothrow
+if (is(T == dchar)||is(T == wchar)||is(T == char))
+{
+	size_t n = 0;
+	for (; str[n] != 0; ++n) {}
+	return n;
+}
+
+unittest
+{
+	version(DSFML_Unittest_System)
+	{
+		import std.stdio;
+		
+		writeln("Unit test for sleep function");
+
+
+	}
+
 }
